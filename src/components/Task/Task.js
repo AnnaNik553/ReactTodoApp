@@ -20,6 +20,7 @@ export default class Task extends Component {
     const { label } = this.state
 
     e.preventDefault()
+    if (label.trim() === '') return
     editItem(label)
   }
 

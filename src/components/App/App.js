@@ -10,7 +10,7 @@ export default class App extends Component {
   idNum = 10
 
   state = {
-    tasks: [this.createItem('First task'), this.createItem('Second task'), this.createItem('Third task')],
+    tasks: [this.createItem('Hi! Add, edit or delete any tasks...')],
     filters: [
       { filterName: 'All', selected: true },
       { filterName: 'Active', selected: false },

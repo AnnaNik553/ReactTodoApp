@@ -20,4 +20,4 @@
 ---
 
 Ссылка на развернутое приложение на Vercel:
-https://todo-mla68zbkx-annanik553.vercel.app/
+https://todo-app-one-swart.vercel.app/

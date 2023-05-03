@@ -7,6 +7,7 @@ import './Task.css'
 export default class Task extends Component {
   state = {
     label: this.props.description,
+    initialLabel: this.props.description,
   }
 
   onChange = (e) => {
@@ -21,15 +22,22 @@ export default class Task extends Component {
 
     e.preventDefault()
     if (label.trim() === '') return
+    this.setState({
+      initialLabel: label,
+    })
     editItem(label)
   }
 
   onKeyDown = (e) => {
-    const { isCompleted } = this.props
-    if (e.code === 'Enter') {
-      isCompleted()
+    const { editItem } = this.props
+    const { initialLabel } = this.state
+
+    if (e.code === 'Escape') {
+      this.setState({
+        label: initialLabel,
+      })
+      editItem(initialLabel)
     }
-    return null
   }
 
   render() {
@@ -47,11 +55,9 @@ export default class Task extends Component {
     return (
       <li className={classNames}>
         <div className="view">
-          <input className="toggle" type="checkbox" />
+          <input className="toggle" type="checkbox" onChange={isCompleted} checked={completed} />
           <span className="label">
-            <span className="description" role="button" onClick={isCompleted} tabIndex={0} onKeyDown={this.onKeyDown}>
-              {description}
-            </span>
+            <span className="description">{description}</span>
             <span className="created">
               {`created ${formatDistanceToNow(created, {
                 includeSeconds: true,
@@ -68,7 +74,13 @@ export default class Task extends Component {
         </div>
         {edit && (
           <form onSubmit={this.onSubmit}>
-            <input type="text" className="edit" value={this.state.label} onChange={this.onChange} />
+            <input
+              type="text"
+              className="edit"
+              value={this.state.label}
+              onChange={this.onChange}
+              onKeyDown={this.onKeyDown}
+            />
           </form>
         )}
       </li>

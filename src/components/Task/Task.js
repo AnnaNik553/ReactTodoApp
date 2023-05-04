@@ -7,7 +7,6 @@ import './Task.css'
 export default class Task extends Component {
   state = {
     label: this.props.description,
-    initialLabel: this.props.description,
   }
 
   onChange = (e) => {
@@ -22,21 +21,17 @@ export default class Task extends Component {
 
     e.preventDefault()
     if (label.trim() === '') return
-    this.setState({
-      initialLabel: label,
-    })
     editItem(label)
   }
 
   onKeyDown = (e) => {
-    const { editItem } = this.props
-    const { initialLabel } = this.state
+    const { editItem, description } = this.props
 
     if (e.code === 'Escape') {
       this.setState({
-        label: initialLabel,
+        label: description,
       })
-      editItem(initialLabel)
+      editItem(description)
     }
   }
 

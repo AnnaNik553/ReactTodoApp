@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import NewTaskForm from '../NewTaskForm'
 import TaskList from '../TaskList'
 import Footer from '../Footer'
+import filteredTasks from '../../utils/filteredTasks'
 
 import './App.css'
 
@@ -48,10 +49,8 @@ export default class App extends Component {
     const newItem = this.createItem(text)
 
     this.setState(({ tasks }) => {
-      const newArr = tasks.slice()
-      newArr.push(newItem)
       return {
-        tasks: newArr,
+        tasks: [...tasks, newItem],
       }
     })
   }
@@ -92,31 +91,16 @@ export default class App extends Component {
     }
   }
 
-  filteredTasks(selectedFilter) {
-    const { tasks } = this.state
-
-    if (selectedFilter.toLowerCase() === 'all') {
-      return tasks
-    }
-    if (selectedFilter.toLowerCase() === 'active') {
-      return tasks.filter((t) => !t.completed)
-    }
-    if (selectedFilter.toLowerCase() === 'completed') {
-      return tasks.filter((t) => t.completed)
-    }
-    return null
-  }
-
   render() {
     const { selectedFilter, filters, tasks } = this.state
-    const taskCount = tasks.reduce((acc, t) => acc + !t.completed, 0)
+    const taskCount = tasks.filter((t) => !t.completed).length
 
     return (
       <section className="todoapp">
         <NewTaskForm addItem={this.addItem} />
         <section className="main">
           <TaskList
-            tasks={this.filteredTasks(selectedFilter)}
+            tasks={filteredTasks(selectedFilter, tasks)}
             deleteItem={this.deleteItem}
             editItem={this.editItem}
             isCompleted={this.isCompleted}

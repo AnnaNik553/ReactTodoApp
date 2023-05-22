@@ -4,6 +4,7 @@ import NewTaskForm from '../NewTaskForm'
 import TaskList from '../TaskList'
 import Footer from '../Footer'
 import filteredTasks from '../../utils/filteredTasks'
+import getTimeInSeconds from '../../utils/getTimeInSeconds'
 
 import './App.css'
 
@@ -11,7 +12,7 @@ export default class App extends Component {
   idNum = 10
 
   state = {
-    tasks: [this.createItem('Hi! Add, edit or delete any tasks...')],
+    tasks: [this.createItem('Hi! Add, edit or delete any tasks...', 0, 0)],
     filters: [
       { filterName: 'All', selected: true },
       { filterName: 'Active', selected: false },
@@ -44,9 +45,9 @@ export default class App extends Component {
     })
   }
 
-  addItem = (text) => {
+  addItem = (text, minutes, seconds) => {
     if (text.trim() === '') return
-    const newItem = this.createItem(text)
+    const newItem = this.createItem(text, minutes, seconds)
 
     this.setState(({ tasks }) => {
       return {
@@ -80,7 +81,7 @@ export default class App extends Component {
     })
   }
 
-  createItem(text) {
+  createItem(text, minutes, seconds) {
     this.idNum += 1
     return {
       description: text,
@@ -88,6 +89,7 @@ export default class App extends Component {
       completed: false,
       edit: false,
       id: this.idNum,
+      time: getTimeInSeconds(minutes, seconds),
     }
   }
 

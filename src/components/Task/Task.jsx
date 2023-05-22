@@ -37,7 +37,7 @@ export default class Task extends Component {
   }
 
   render() {
-    const { description, created, completed, edit, isCompleted, deleteItem, editItem } = this.props
+    const { description, created, completed, edit, isCompleted, deleteItem, editItem, time } = this.props
 
     let classNames = ''
     if (completed) {
@@ -54,7 +54,7 @@ export default class Task extends Component {
           <input className="toggle" type="checkbox" onChange={isCompleted} checked={completed} />
           <span className="label">
             <span className="description">{description}</span>
-            <TaskTimer />
+            <TaskTimer time={time} />
             <span className="created">
               {`created ${formatDistanceToNow(created, {
                 includeSeconds: true,

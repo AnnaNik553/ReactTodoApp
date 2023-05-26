@@ -4,17 +4,13 @@ import PropTypes from 'prop-types'
 import TasksFilter from '../TasksFilter'
 import './Footer.css'
 
-function Footer({ taskCount, filters, isSelectedFilter, clearCompleted }) {
+const Footer = ({ taskCount, filters, clearCompleted }) => {
   return (
     <footer className="footer">
       <span className="todo-count">{taskCount} items left</span>
       <ul className="filters">
         {filters.map((filter) => (
-          <TasksFilter
-            key={filter.filterName}
-            {...filter}
-            isSelectedFilter={() => isSelectedFilter(filter.filterName)}
-          />
+          <TasksFilter key={filter.filterName} {...filter} />
         ))}
       </ul>
       <button type="button" className="clear-completed" onClick={clearCompleted}>
@@ -32,7 +28,6 @@ Footer.defaultProps = {
 Footer.propTypes = {
   taskCount: PropTypes.number,
   filters: PropTypes.arrayOf(PropTypes.object),
-  isSelectedFilter: PropTypes.func.isRequired,
   clearCompleted: PropTypes.func.isRequired,
 }
 

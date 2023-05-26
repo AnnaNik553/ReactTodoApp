@@ -1,88 +1,59 @@
-import React, { Component } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import TaskTimer from '../TaskTimer'
 import './Task.css'
+import ContextFunctions from '../../context/context'
 
-export default class Task extends Component {
-  state = {
-    label: this.props.description,
+const Task = ({ description, created, completed, edit, time, id }) => {
+  const [label, setLabel] = useState(description)
+  const { deleteItem, editItem, isCompleted } = useContext(ContextFunctions)
+
+  const onChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  onChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  onSubmit = (e) => {
-    const { editItem } = this.props
-    const { label } = this.state
-
+  const onSubmit = (e) => {
     e.preventDefault()
     if (label.trim() === '') return
-    editItem(label)
+    editItem(id, label)
   }
 
-  onKeyDown = (e) => {
-    const { editItem, description } = this.props
-
+  const onKeyDown = (e) => {
     if (e.code === 'Escape') {
-      this.setState({
-        label: description,
-      })
-      editItem(description)
+      setLabel(description)
+      editItem(id, description)
     }
   }
 
-  render() {
-    const { description, created, completed, edit, isCompleted, deleteItem, editItem, time } = this.props
+  let classNames = ''
+  classNames += completed ? ' completed' : ''
+  classNames += edit ? ' editing' : ''
 
-    let classNames = ''
-    if (completed) {
-      classNames += ' completed'
-    }
-
-    if (edit) {
-      classNames += ' editing'
-    }
-
-    return (
-      <li className={classNames}>
-        <div className="view">
-          <input className="toggle" type="checkbox" onChange={isCompleted} checked={completed} />
-          <span className="label">
-            <span className="description">{description}</span>
-            <TaskTimer time={time} />
-            <span className="created">
-              {`created ${formatDistanceToNow(created, {
-                includeSeconds: true,
-              })} ego`}
-            </span>
+  return (
+    <li className={classNames}>
+      <div className="view">
+        <input className="toggle" type="checkbox" onChange={() => isCompleted(id)} checked={completed} />
+        <span className="label">
+          <span className="description">{description}</span>
+          <TaskTimer time={time} />
+          <span className="created">
+            {`created ${formatDistanceToNow(created, {
+              includeSeconds: true,
+            })} ego`}
           </span>
-          <button
-            type="button"
-            aria-label="edit"
-            className="icon icon-edit"
-            onClick={() => editItem(this.state.label)}
-          />
-          <button type="button" aria-label="delete" className="icon icon-destroy" onClick={deleteItem} />
-        </div>
-        {edit && (
-          <form onSubmit={this.onSubmit}>
-            <input
-              type="text"
-              className="edit"
-              value={this.state.label}
-              onChange={this.onChange}
-              onKeyDown={this.onKeyDown}
-            />
-          </form>
-        )}
-      </li>
-    )
-  }
+        </span>
+        <button type="button" aria-label="edit" className="icon icon-edit" onClick={() => editItem(id, label)} />
+        <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => deleteItem(id)} />
+      </div>
+      {edit && (
+        <form onSubmit={onSubmit}>
+          <input type="text" className="edit" value={label} onChange={onChange} onKeyDown={onKeyDown} />
+        </form>
+      )}
+    </li>
+  )
 }
 
 Task.defaultProps = {
@@ -97,6 +68,6 @@ Task.propTypes = {
   created: PropTypes.number,
   completed: PropTypes.bool,
   edit: PropTypes.bool,
-  isCompleted: PropTypes.func.isRequired,
-  deleteItem: PropTypes.func.isRequired,
 }
+
+export default Task

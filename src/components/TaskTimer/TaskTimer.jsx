@@ -1,60 +1,38 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 
 import getFormatTime from '../../utils/getFormatTime'
-
 import './TaskTimer.css'
 
-export default class TaskTimer extends Component {
-  state = {
-    time: this.props.time,
-    isCounting: false,
-    isSetTime: Boolean(this.props.time),
-  }
+const TaskTimer = ({ time }) => {
+  const [timer, setTime] = useState(time)
+  const [isCounting, setIsCounting] = useState(false)
+  const [isSetTime, setIsSetTime] = useState(Boolean(time))
 
-  componentWillUnmount() {
-    clearInterval(this.intervalId)
-  }
-
-  countingTime = () => {
-    if (this.state.isCounting) return
-    const { isSetTime } = this.state
-    function tickIncrement() {
-      this.setState(({ time }) => {
-        return { time: time + 1 }
-      })
+  useEffect(() => {
+    let intervalId
+    if (isCounting) {
+      intervalId = isSetTime
+        ? setInterval(() => {
+            if (timer === 0) {
+              setIsCounting(false)
+              setIsSetTime(false)
+              return
+            }
+            setTime(timer - 1)
+          }, 1000)
+        : setInterval(() => setTime(timer + 1), 1000)
     }
-    function tickDecrement() {
-      const { time } = this.state
-      if (time === 0) {
-        clearInterval(this.intervalId)
-        this.setState({ isSetTime: false, isCounting: false })
-        return
-      }
-      this.setState(() => {
-        return { time: time - 1 }
-      })
-    }
-    this.intervalId = isSetTime
-      ? setInterval(tickDecrement.bind(this), 1000)
-      : setInterval(tickIncrement.bind(this), 1000)
-    this.setState({ isCounting: true })
-  }
+    return () => clearInterval(intervalId)
+  }, [timer, isCounting])
 
-  countingPause = () => {
-    clearInterval(this.intervalId)
-    this.setState({ isCounting: false })
-  }
-
-  render() {
-    const { time } = this.state
-
-    return (
-      <span className="description">
-        <button type="button" className="icon-play" onClick={this.countingTime} />
-        <button type="button" className="icon-pause" onClick={this.countingPause} />
-        <span className="timer">{getFormatTime(time)}</span>
-      </span>
-    )
-  }
+  return (
+    <span className="description">
+      <button type="button" className="icon-play" onClick={() => setIsCounting(true)} />
+      <button type="button" className="icon-pause" onClick={() => setIsCounting(false)} />
+      <span className="timer">{getFormatTime(timer)}</span>
+    </span>
+  )
 }
+
+export default TaskTimer

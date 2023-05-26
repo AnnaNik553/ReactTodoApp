@@ -20,4 +20,4 @@
 ---
 
 Ссылка на развернутое приложение на Vercel:
-https://todo-app-git-tasktimer-annanik553.vercel.app/
+https://todo-app-git-onhooks-annanik553.vercel.app/
